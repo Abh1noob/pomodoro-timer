@@ -4,9 +4,33 @@ const Timer = () => {
   const [currentTimer, setCurrentTimer] = useState("pomodoro");
   const [timeRemaining, setTimeRemaining] = useState(timer.pomodoro * 60);
   const [isRunning, setIsRunning] = useState(false);
+  const [intervalCount, setIntervalCount] = useState(timer.longBreakInterval);
 
   const updateTimer = () => {
-    setTimeRemaining((prevTime) => prevTime - 1);
+    setTimeRemaining((prevTime) => {
+      if (prevTime > 0) {
+        return prevTime - 1;
+      } else {
+        
+        if (currentTimer === "pomodoro") {
+          if (intervalCount > 1) {
+            setCurrentTimer("shortBreak");
+            setTimeRemaining(timer.shortBreak * 60);
+          } else {
+            setCurrentTimer("longBreak");
+            setTimeRemaining(timer.longBreak * 60);
+          }
+          setIntervalCount((prevCount) => prevCount - 1);
+        } else if (currentTimer === "shortBreak") {
+          setCurrentTimer("pomodoro");
+          setTimeRemaining(timer.pomodoro * 60);
+        } else if (currentTimer === "longBreak") {
+          setIsRunning(false); 
+          setCurrentTimer("longBreak");
+          setTimeRemaining(0);
+        }
+      }
+    });
   };
 
   useEffect(() => {
@@ -19,9 +43,11 @@ const Timer = () => {
     }
 
     return () => clearInterval(timerInterval);
-  }, [isRunning]);
+  }, [isRunning, intervalCount, currentTimer]);
 
   const setTimer = (mode) => {
+    setIsRunning(false);
+    setIntervalCount(timer.longBreakInterval);
     setCurrentTimer(mode);
     switch (mode) {
       case "pomodoro":
@@ -41,9 +67,11 @@ const Timer = () => {
   const handleStartPause = () => {
     setIsRunning((prevState) => !prevState);
   };
-
+  
   const handleReset = () => {
     setIsRunning(false);
+    setIntervalCount(timer.longBreakInterval);
+    setCurrentTimer("pomodoro");
     setTimeRemaining(timer.pomodoro * 60);
   };
 
@@ -66,11 +94,10 @@ const Timer = () => {
 };
 
 const timer = {
-  pomodoro: 25,
-  shortBreak: 5,
-  longBreak: 15,
-  longBreakInterval: 4,
-  sessions: 0,
+  pomodoro: 5, 
+  shortBreak: 2, 
+  longBreak: 3, 
+  longBreakInterval: 3,
 };
 
 export default Timer;
