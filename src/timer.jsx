@@ -42,6 +42,11 @@ const Timer = () => {
     setIsRunning((prevState) => !prevState);
   };
 
+  const handleReset = () => {
+    setIsRunning(false);
+    setTimeRemaining(timer.pomodoro * 60);
+  };
+
   return (
     <div>
       <h1>{currentTimer} Timer</h1>
@@ -52,6 +57,7 @@ const Timer = () => {
       <button onClick={handleStartPause}>
         {isRunning ? "Pause" : "Start"}
       </button>
+      <button onClick={handleReset}>Reset</button>
       <button onClick={() => setTimer("pomodoro")}>Pomodoro</button>
       <button onClick={() => setTimer("shortBreak")}>Short Break</button>
       <button onClick={() => setTimer("longBreak")}>Long Break</button>
