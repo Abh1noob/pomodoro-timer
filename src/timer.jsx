@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CustomButton from "./components/customButton";
 
 const Timer = () => {
   const [currentTimer, setCurrentTimer] = useState("pomodoro");
@@ -88,32 +89,36 @@ const Timer = () => {
     setIntervalCount(timer.longBreakInterval);
     setCurrentTimer("pomodoro");
     setTimeRemaining(pomodoroDuration * 60);
+    setShortBreakDuration(timer.shortBreak);
+    setLongBreakDuration(timer.longBreak);
+    setIntervalCount(timer.longBreakInterval);
+    setPomodoroDuration(timer.pomodoro);
     setBackgroundColor("#59D5E0");
   };
 
   const handlePomodoroChange = (value) => {
-    setPomodoroDuration(Math.max(1, pomodoroDuration + value));
+    setPomodoroDuration(Math.max(0, pomodoroDuration + value));
     if (currentTimer === "pomodoro") {
-      setTimeRemaining(Math.max(1, timeRemaining + value * 60));
+      setTimeRemaining(Math.max(0, timeRemaining + value * 60));
     }
   };
 
   const handleShortBreakChange = (value) => {
-    setShortBreakDuration(Math.max(1, shortBreakDuration + value));
+    setShortBreakDuration(Math.max(0, shortBreakDuration + value));
     if (currentTimer === "shortBreak") {
-      setTimeRemaining(Math.max(1, timeRemaining + value * 60));
+      setTimeRemaining(Math.max(0, timeRemaining + value * 60));
     }
   };
 
   const handleLongBreakChange = (value) => {
-    setLongBreakDuration(Math.max(1, longBreakDuration + value));
+    setLongBreakDuration(Math.max(0, longBreakDuration + value));
     if (currentTimer === "longBreak") {
-      setTimeRemaining(Math.max(1, timeRemaining + value * 60));
+      setTimeRemaining(Math.max(0, timeRemaining + value * 60));
     }
   };
 
   const handleLongBreakIntervalChange = (value) => {
-    setIntervalCount(Math.max(1, intervalCount + value));
+    setIntervalCount(Math.max(0, intervalCount + value));
   };
 
   return (
@@ -146,82 +151,34 @@ const Timer = () => {
         <button onClick={() => setTimer("longBreak")}>Long Break</button>
       </div>
       <div className="duration-settings-container">
-        <div
-          className="duration-settings"
-          style={{ backgroundColor: durationBackgroundColor }}
-        >
-          <button
-            className="arrow-button"
-            onClick={() => handlePomodoroChange(1)}
-          >
-            ↑
-          </button>
-          <p>{pomodoroDuration} minutes</p>
-          <button
-            className="arrow-button"
-            onClick={() => handlePomodoroChange(-1)}
-          >
-            ↓
-          </button>
-          <p className="duration-settings-text">Pomodoro Duration</p>
-        </div>
-        <div
-          className="duration-settings"
-          style={{ backgroundColor: durationBackgroundColor }}
-        >
-          <button
-            className="arrow-button"
-            onClick={() => handleShortBreakChange(1)}
-          >
-            ↑
-          </button>
-          <p>{shortBreakDuration} minutes</p>
-          <button
-            className="arrow-button"
-            onClick={() => handleShortBreakChange(-1)}
-          >
-            ↓
-          </button>
-          <p className="duration-settings-text">Short Break Duration</p>
-        </div>
-        <div
-          className="duration-settings"
-          style={{ backgroundColor: durationBackgroundColor }}
-        >
-          <button
-            className="arrow-button"
-            onClick={() => handleLongBreakChange(1)}
-          >
-            ↑
-          </button>
-          <p>{longBreakDuration} minutes</p>
-          <button
-            className="arrow-button"
-            onClick={() => handleLongBreakChange(-1)}
-          >
-            ↓
-          </button>
-          <p className="duration-settings-text">Long Break Duration</p>
-        </div>
-        <div
-          className="duration-settings"
-          style={{ backgroundColor: durationBackgroundColor }}
-        >
-          <button
-            className="arrow-button"
-            onClick={() => handleLongBreakIntervalChange(1)}
-          >
-            ↑
-          </button>
-          <p>{intervalCount} Intervals</p>
-          <button
-            className="arrow-button"
-            onClick={() => handleLongBreakIntervalChange(-1)}
-          >
-            ↓
-          </button>
-          <p className="duration-settings-text">Long Break Interval</p>
-        </div>
+
+        <CustomButton
+          durationBackgroundColor={durationBackgroundColor}
+          context={`${pomodoroDuration} min`}
+          description="Pomodoro Duration"
+          handleChange={handlePomodoroChange}
+        />
+
+        <CustomButton
+          durationBackgroundColor={durationBackgroundColor}
+          context={`${shortBreakDuration} min`}
+          description="Short Break Duration"
+          handleChange={handleShortBreakChange}
+        />
+        
+        <CustomButton
+          durationBackgroundColor={durationBackgroundColor}
+          context={`${longBreakDuration} min`}
+          description="Long Break Duration"
+          handleChange={handleLongBreakChange}
+        />
+        
+        <CustomButton
+          durationBackgroundColor={durationBackgroundColor}
+          context={`${intervalCount} Intervals`}
+          description="Long Break Intervals"
+          handleChange={handleLongBreakIntervalChange}
+        />
       </div>
     </div>
   );
